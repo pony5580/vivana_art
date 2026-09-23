@@ -1,0 +1,64 @@
+---
+// クレヨン調の円形ロゴ（VIVA / NA / art）。正式な .ai ロゴSVG書き出し後に差し替え可能。
+interface Props {
+  size?: number;
+  variant?: 'board' | 'paper';
+  title?: string;
+}
+const { size = 88, variant = 'paper', title = 'ビバナアート' } = Astro.props;
+const ring = variant === 'board' ? '#f7f4ec' : '#3e8e4f';
+---
+
+<span
+  class="logo"
+  style={`--size:${size}px; --ring:${ring};`}
+  role="img"
+  aria-label={title}
+>
+  <span class="logo__row logo__row--1">
+    <b style="color:var(--viva-red)">V</b><b style="color:var(--sun)">I</b><b
+      style="color:var(--sky)">V</b
+    ><b style="color:var(--grass)">A</b>
+  </span>
+  <span class="logo__row logo__row--2">
+    <b style="color:var(--grass)">N</b><b style="color:var(--pink)">A</b>
+  </span>
+  <span class="logo__row logo__row--3">
+    <b style="color:var(--viva-red)">a</b><b style="color:var(--sky)">r</b><b
+      style="color:var(--violet)">t</b
+    >
+  </span>
+</span>
+
+<style>
+  .logo {
+    display: grid;
+    place-content: center;
+    justify-items: center;
+    width: var(--size);
+    height: var(--size);
+    border-radius: 50%;
+    border: 2.5px solid var(--ring);
+    font-family: var(--font-hand);
+    line-height: 0.82;
+    gap: 0.04em;
+    padding: 6%;
+    /* ざらついた手描き感 */
+    box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--ring) 30%, transparent);
+    transform: rotate(-3deg);
+    flex: none;
+  }
+  .logo__row {
+    display: flex;
+  }
+  .logo b {
+    font-size: calc(var(--size) * 0.26);
+    font-weight: 700;
+  }
+  .logo__row--2 b {
+    font-size: calc(var(--size) * 0.24);
+  }
+  .logo__row--3 b {
+    font-size: calc(var(--size) * 0.2);
+  }
+</style>

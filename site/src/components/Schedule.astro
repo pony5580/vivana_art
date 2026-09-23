@@ -1,0 +1,202 @@
+---
+// レッスンカレンダー（FullCalendar）
+// 現在はサンプル予定を表示。運用時は Googleカレンダー(1本)に差し替え。
+// クラス＝イベント色で区別（キッズ/ジュニア/ユース）。
+const legend = [
+  { name: 'キッズ', color: 'var(--kids)' },
+  { name: 'ジュニア', color: 'var(--junior)' },
+  { name: 'ユース', color: 'var(--youth)' },
+  { name: 'イベント', color: 'var(--sun)' },
+];
+---
+
+<section class="section section--board schedule" id="schedule">
+  <div class="wrap">
+    <header class="schedule__head">
+      <p class="eyebrow">Schedule</p>
+      <h2 class="heading">今月・来月のレッスンカレンダー。</h2>
+      <p class="lead">
+        開催日やイベントを掲載しています。色はクラスごとの目印です。
+      </p>
+      <ul class="legend" aria-label="クラスの色分け">
+        {
+          legend.map((l) => (
+            <li>
+              <span class="legend__dot" style={`background:${l.color}`} />
+              {l.name}
+            </li>
+          ))
+        }
+      </ul>
+    </header>
+
+    <div class="schedule__card">
+      <div id="calendar" aria-label="レッスンカレンダー"></div>
+    </div>
+
+    <p class="schedule__note">
+      ※ 現在はサンプル表示です。実際の開催日は公式LINEでもご案内します。
+    </p>
+  </div>
+</section>
+
+<style>
+  .schedule__head {
+    text-align: center;
+    margin-bottom: 2rem;
+  }
+  .schedule__head .lead {
+    margin-top: 0.6rem;
+  }
+  .legend {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 1rem;
+    margin-top: 1.2rem;
+    font-size: 0.9rem;
+    font-weight: 700;
+  }
+  .legend li {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+  }
+  .legend__dot {
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    display: inline-block;
+  }
+  .schedule__card {
+    background: var(--paper);
+    color: var(--ink);
+    border-radius: var(--radius);
+    padding: clamp(0.8rem, 2vw, 1.5rem);
+    box-shadow: 0 24px 60px -30px rgba(0, 0, 0, 0.8);
+    max-width: 900px;
+    margin-inline: auto;
+  }
+  .schedule__note {
+    text-align: center;
+    color: var(--chalk-dim);
+    font-size: 0.85rem;
+    margin-top: 1.2rem;
+  }
+
+  /* FullCalendar 調整（v6はCSS-in-JS。ここで見た目を寄せる） */
+  #calendar {
+    --fc-border-color: var(--paper-2);
+    --fc-today-bg-color: rgba(242, 184, 7, 0.12);
+    --fc-page-bg-color: var(--paper);
+    font-family: var(--font-jp);
+  }
+  #calendar :global(.fc .fc-toolbar-title) {
+    font-size: 1.2rem;
+    font-weight: 900;
+  }
+  #calendar :global(.fc .fc-button) {
+    background: var(--board);
+    border: none;
+    font-weight: 700;
+    text-transform: none;
+    box-shadow: none;
+  }
+  #calendar :global(.fc .fc-button:hover) {
+    background: var(--board-soft);
+  }
+  #calendar :global(.fc .fc-button-primary:disabled) {
+    background: var(--ink-soft);
+  }
+  #calendar :global(.fc .fc-daygrid-day-number),
+  #calendar :global(.fc .fc-col-header-cell-cushion) {
+    color: var(--ink);
+    text-decoration: none;
+  }
+  #calendar :global(.fc-event) {
+    border: none;
+    font-weight: 700;
+    font-size: 0.72rem;
+    padding: 1px 3px;
+    cursor: default;
+  }
+  #calendar :global(.fc .fc-list-event:hover td) {
+    background: var(--paper-2);
+  }
+</style>
+
+<script>
+  import { Calendar } from '@fullcalendar/core';
+  import dayGridPlugin from '@fullcalendar/daygrid';
+  import listPlugin from '@fullcalendar/list';
+  import jaLocale from '@fullcalendar/core/locales/ja';
+
+  const KIDS = '#e8552b';
+  const JUNIOR = '#2e9fb0';
+  const YOUTH = '#7e4ca8';
+
+  const pad = (n: number) => String(n).padStart(2, '0');
+  const ymd = (d: Date) =>
+    `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+
+  type Ev = { title: string; start: string; end: string; color: string };
+  const ev = (title: string, s: string, e: string, color: string): Ev => ({
+    title,
+    start: s,
+    end: e,
+    color,
+  });
+
+  // 今月・来月のサンプル予定（運用時はGoogleカレンダーに置換）
+  function sampleEvents(): Ev[] {
+    const events: Ev[] = [];
+    const now = new Date();
+    for (let m = 0; m < 2; m++) {
+      const y = now.getFullYear();
+      const mon = now.getMonth() + m;
+      const days = new Date(y, mon + 1, 0).getDate();
+      for (let d = 1; d <= days; d++) {
+        const date = new Date(y, mon, d);
+        const wd = date.getDay();
+        const iso = ymd(date);
+        if (wd === 1 || wd === 4) {
+          events.push(ev('キッズ', `${iso}T15:30`, `${iso}T17:00`, KIDS));
+          events.push(ev('ジュニア', `${iso}T17:00`, `${iso}T18:30`, JUNIOR));
+        }
+        if (wd === 6) {
+          events.push(ev('キッズ', `${iso}T09:00`, `${iso}T10:30`, KIDS));
+          events.push(ev('ジュニア', `${iso}T10:30`, `${iso}T12:00`, JUNIOR));
+          events.push(ev('ユース', `${iso}T10:30`, `${iso}T12:00`, YOUTH));
+          events.push(ev('ユース', `${iso}T13:30`, `${iso}T15:30`, YOUTH));
+        }
+      }
+    }
+    return events;
+  }
+
+  const el = document.getElementById('calendar');
+  if (el) {
+    const isMobile = window.matchMedia('(max-width: 620px)').matches;
+    const calendar = new Calendar(el, {
+      plugins: [dayGridPlugin, listPlugin],
+      locale: jaLocale,
+      initialView: isMobile ? 'listMonth' : 'dayGridMonth',
+      height: 'auto',
+      headerToolbar: {
+        left: 'prev,next today',
+        center: 'title',
+        right: isMobile ? '' : 'dayGridMonth,listMonth',
+      },
+      displayEventTime: true,
+      eventDisplay: 'block',
+      events: sampleEvents(),
+
+      // --- 運用時：Googleカレンダー1本に差し替え ---
+      // plugins に googleCalendarPlugin を追加し、以下を設定:
+      // googleCalendarApiKey: import.meta.env.PUBLIC_GCAL_API_KEY,
+      // events: { googleCalendarId: 'xxxxx@group.calendar.google.com' },
+      // ※ Googleカレンダーの各予定に色を設定すると、その色で表示されます。
+    });
+    calendar.render();
+  }
+</script>

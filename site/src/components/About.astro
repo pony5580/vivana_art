@@ -1,0 +1,115 @@
+---
+import { Image } from 'astro:assets';
+import scribble from '../assets/photos/crayon-scribble.jpg';
+---
+
+<section class="section about" id="about">
+  <div class="wrap about__grid">
+    <div class="about__head">
+      <p class="eyebrow">About</p>
+      <h2 class="heading">
+        大切にしているのは、<br />
+        <span class="underline-chalk">「夢中になれる時間」</span>です。
+      </h2>
+    </div>
+
+    <figure class="about__photo">
+      <Image
+        src={scribble}
+        alt="たくさんの色でぐるぐると描くこどもの手"
+        widths={[360, 620]}
+        sizes="(max-width:820px) 90vw, 420px"
+      />
+    </figure>
+
+    <div class="about__body">
+      <p>
+        何かに夢中になっているとき、人は自然と挑戦し、考え、笑顔になります。
+        時間を忘れて手を動かし、「もっとやってみたい」「これ、好きかも」——
+        そんな小さな気持ちが、自分らしさを育てていくと信じています。
+      </p>
+      <p>
+        今はたくさんの情報があふれ、誰かの「いいね」や流行に触れる機会が
+        いたるところにあります。だからこそ、自分が本当に好きなことや、
+        心が動く瞬間を見失ってしまうこともあります。
+      </p>
+      <p>
+        ビバナアートは、誰かと比べる場所ではありません。
+        自由に表現し、夢中になる時間の中で「自分はこれが好き。」と、
+        その気持ちを大切にできる場所でありたいと思っています。
+      </p>
+
+      <ul class="about__likes" aria-label="大切にする3つの好き">
+        <li style="--c:var(--viva-red)">好きな色</li>
+        <li style="--c:var(--sky)">好きな形</li>
+        <li style="--c:var(--violet)">好きな表現</li>
+      </ul>
+
+      <p>
+        そのひとつひとつの「好き」は、自分らしさをつくり、人生を豊かにしてくれる
+        かけがえのないものになります。作品を完成させることが目的ではなく、
+        夢中になる時間そのものを大切に。ここで見つけた「好き」が、
+        一生の宝物になってくれたら嬉しいです。
+      </p>
+    </div>
+  </div>
+</section>
+
+<style>
+  .about__grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: clamp(1.5rem, 4vw, 3.5rem) clamp(2rem, 5vw, 4rem);
+    align-items: start;
+  }
+  .about__head {
+    grid-column: 1 / -1;
+    max-width: 40ch;
+  }
+  .about__photo {
+    position: sticky;
+    top: 90px;
+  }
+  .about__photo :global(img) {
+    width: 100%;
+    height: auto;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-soft);
+    transform: rotate(-1.5deg);
+  }
+  .about__body {
+    max-width: 62ch;
+  }
+  .about__body p + p {
+    margin-top: 1.15rem;
+  }
+  .about__likes {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.7rem;
+    margin: 1.6rem 0;
+  }
+  .about__likes li {
+    font-weight: 700;
+    font-size: 1.05rem;
+    color: #fff;
+    background: var(--c);
+    padding: 0.35em 1em;
+    border-radius: 999px;
+    transform: rotate(-2deg);
+    box-shadow: 0 8px 16px -10px var(--c);
+  }
+  .about__likes li:nth-child(2) {
+    transform: rotate(1.5deg);
+  }
+
+  @media (max-width: 820px) {
+    .about__grid {
+      grid-template-columns: 1fr;
+    }
+    .about__photo {
+      position: static;
+      max-width: 420px;
+    }
+  }
+</style>

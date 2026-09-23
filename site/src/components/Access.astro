@@ -1,0 +1,96 @@
+---
+import { site } from '../data/site';
+const mapQuery = encodeURIComponent(
+  `${site.address.zip} ${site.address.body}`
+);
+const mapSrc = `https://www.google.com/maps?q=${mapQuery}&z=16&output=embed`;
+---
+
+<section class="section access" id="access">
+  <div class="wrap access__grid">
+    <div class="access__info">
+      <p class="eyebrow">Access</p>
+      <h2 class="heading">{site.name}</h2>
+
+      <dl class="access__list">
+        <div>
+          <dt>住所</dt>
+          <dd>{site.address.zip}<br />{site.address.body}</dd>
+        </div>
+        <div>
+          <dt>最寄駅</dt>
+          <dd>{site.address.access}</dd>
+        </div>
+      </dl>
+
+      <a
+        class="access__maplink"
+        href={`https://www.google.com/maps/search/?api=1&query=${mapQuery}`}
+        target="_blank"
+        rel="noopener"
+      >
+        Googleマップで開く →
+      </a>
+    </div>
+
+    <div class="access__map">
+      <iframe
+        src={mapSrc}
+        title={`${site.name}の地図`}
+        loading="lazy"
+        referrerpolicy="no-referrer-when-downgrade"
+        allowfullscreen
+      ></iframe>
+    </div>
+  </div>
+</section>
+
+<style>
+  .access__grid {
+    display: grid;
+    grid-template-columns: 0.8fr 1.2fr;
+    gap: clamp(1.5rem, 4vw, 3rem);
+    align-items: center;
+  }
+  .access__list {
+    margin-top: 1.4rem;
+    display: grid;
+    gap: 1rem;
+  }
+  .access__list dt {
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: var(--grass);
+    letter-spacing: 0.1em;
+  }
+  .access__list dd {
+    font-weight: 500;
+    margin-top: 0.15rem;
+  }
+  .access__maplink {
+    display: inline-block;
+    margin-top: 1.4rem;
+    font-weight: 700;
+    color: var(--sky);
+    border-bottom: 2px solid currentColor;
+    padding-bottom: 2px;
+  }
+  .access__map {
+    border-radius: var(--radius);
+    overflow: hidden;
+    box-shadow: var(--shadow-soft);
+    aspect-ratio: 16 / 10;
+    background: var(--paper-2);
+  }
+  .access__map iframe {
+    width: 100%;
+    height: 100%;
+    border: 0;
+  }
+
+  @media (max-width: 760px) {
+    .access__grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

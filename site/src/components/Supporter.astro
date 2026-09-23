@@ -1,0 +1,115 @@
+---
+import { Image } from 'astro:assets';
+import portrait from '../assets/photos/welcome-board.jpg';
+---
+
+<section class="section supporter" id="supporter">
+  <div class="wrap supporter__grid">
+    <figure class="supporter__photo">
+      <Image
+        src={portrait}
+        alt="ビバナアートのアトリエとチョークアートの黒板"
+        widths={[420, 720]}
+        sizes="(max-width:860px) 90vw, 460px"
+      />
+      <figcaption>アトリエにて</figcaption>
+    </figure>
+
+    <div class="supporter__body">
+      <p class="eyebrow">About me</p>
+      <p class="supporter__role">「一緒に考え、一緒に楽しむ人」</p>
+      <h2 class="heading supporter__name">
+        坂野 奈穂子<span>Nahoko Sakano ・ 1984年生まれ</span>
+      </h2>
+
+      <div class="supporter__story stack" style="--stack:1.1rem">
+        <p>
+          20代の頃、実家の看板屋でデザインの仕事をする中で、オーストラリア発祥の
+          チョークアートに出会いました。オイルパステルを指でのばして描く、
+          あたたかく鮮やかな表現に魅了され、看板やウェディングボードの制作、
+          各地でのワークショップなど、アートに関わる日々を過ごしました。
+        </p>
+        <p>
+          30代になり、結婚・出産を経て制作からはなれ、育児中心の毎日に。
+          その中で「自分の好きなこと」「自分の時間」の大切さを、改めて感じるように
+          なりました。久しぶりに絵を描けた日、時間を忘れて夢中になれた感覚は、
+          「やっぱり、私はこれが好きなんだ」と自分を思い出させてくれました。
+        </p>
+        <p>
+          二人の息子の育児と、ワークショップで子どもたちと出会う中で、
+          自由な発想や「やってみたい！」という気持ち、大人にはない柔軟な表現力に
+          心を動かされました。誰かと比べるのでも、正解をみつけるのでもない、
+          自分の「好き」を大切にできる場所があったら——
+          そんな想いから、ビバナアートをはじめました。
+        </p>
+        <p>
+          自由に表現する楽しさと、これまで培ってきた技術や経験。
+          そのどちらも大切にしながら、ひとりひとりの「好き」が育つ時間を、
+          一緒に作っていきたいと思っています。
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .supporter {
+    background: var(--paper-2);
+  }
+  .supporter__grid {
+    display: grid;
+    grid-template-columns: 0.9fr 1.1fr;
+    gap: clamp(1.8rem, 5vw, 4rem);
+    align-items: start;
+  }
+  .supporter__photo {
+    position: sticky;
+    top: 90px;
+  }
+  .supporter__photo :global(img) {
+    width: 100%;
+    height: auto;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-soft);
+  }
+  .supporter__photo figcaption {
+    font-size: 0.8rem;
+    color: var(--ink-soft);
+    margin-top: 0.5rem;
+    text-align: right;
+  }
+  .supporter__role {
+    font-family: var(--font-hand);
+    font-size: 1.6rem;
+    color: var(--grass);
+    margin-top: 0.4rem;
+    line-height: 1.2;
+  }
+  .supporter__name {
+    margin-top: 0.3rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+  }
+  .supporter__name span {
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: var(--ink-soft);
+    letter-spacing: 0.08em;
+  }
+  .supporter__story {
+    margin-top: 1.4rem;
+    max-width: 60ch;
+    font-size: 0.97rem;
+  }
+
+  @media (max-width: 860px) {
+    .supporter__grid {
+      grid-template-columns: 1fr;
+    }
+    .supporter__photo {
+      position: static;
+      max-width: 460px;
+    }
+  }
+</style>

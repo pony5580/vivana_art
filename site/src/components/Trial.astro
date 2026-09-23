@@ -1,0 +1,101 @@
+---
+import { site } from '../data/site';
+
+const facts = [
+  { k: '時間', v: '60分' },
+  { k: '参加費', v: '1,500円', note: '材料費込み' },
+  { k: '対象', v: '5歳〜高校生' },
+  { k: '持ち物', v: '手ぶらでOK', note: '汚れてもいい服装で' },
+];
+---
+
+<section class="section section--board trial" id="trial">
+  <div class="wrap trial__wrap">
+    <header class="trial__head">
+      <p class="eyebrow">Trial Lesson</p>
+      <h2 class="heading">まずは体験レッスンから。</h2>
+      <p class="lead">
+        レッスン開催日の中から、ご都合のいい日をご予約ください。
+        気軽に、遊びにくる感覚でどうぞ。
+      </p>
+    </header>
+
+    <dl class="trial__facts">
+      {
+        facts.map((f) => (
+          <div class="trial__fact">
+            <dt>{f.k}</dt>
+            <dd>
+              <b>{f.v}</b>
+              {f.note && <span>{f.note}</span>}
+            </dd>
+          </div>
+        ))
+      }
+    </dl>
+
+    <p class="trial__note">
+      自発的に創作を楽しめるよう、原則お子さまのみでご参加いただいています。
+      初めてで不安な場合は親子参加も可能です（親子の場合は、お子さま・保護者
+      それぞれに参加費を頂戴します）。
+    </p>
+
+    <a class="btn btn--line trial__cta" href={site.line} target="_blank" rel="noopener">
+      体験を申し込む（LINE）
+    </a>
+  </div>
+</section>
+
+<style>
+  .trial__wrap {
+    max-width: var(--wrap-narrow);
+    text-align: center;
+  }
+  .trial__head .lead {
+    margin-top: 0.8rem;
+  }
+  .trial__facts {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1rem;
+    margin: 2.5rem 0 1.5rem;
+  }
+  .trial__fact {
+    background: var(--board-soft);
+    border-radius: var(--radius);
+    padding: 1.2rem 0.8rem;
+    border: 1px dashed rgba(247, 244, 236, 0.22);
+  }
+  .trial__fact dt {
+    font-size: 0.82rem;
+    color: var(--sun);
+    letter-spacing: 0.1em;
+    font-weight: 700;
+  }
+  .trial__fact dd {
+    margin-top: 0.4rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+  }
+  .trial__fact b {
+    font-size: 1.25rem;
+    font-weight: 900;
+  }
+  .trial__fact span {
+    font-size: 0.78rem;
+    color: var(--chalk-dim);
+  }
+  .trial__note {
+    font-size: 0.92rem;
+    color: var(--chalk-dim);
+    max-width: 54ch;
+    margin: 0 auto 2rem;
+  }
+
+  @media (max-width: 640px) {
+    .trial__facts {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+</style>

@@ -1,0 +1,100 @@
+---
+import Logo from './Logo.astro';
+import { site, nav } from '../data/site';
+const year = 2026;
+---
+
+<footer class="ft">
+  <div class="wrap ft__inner">
+    <div class="ft__brand">
+      <Logo size={64} variant="board" />
+      <div>
+        <b>{site.name}</b>
+        <p>{site.tagline}</p>
+      </div>
+    </div>
+
+    <nav class="ft__nav" aria-label="フッターナビ">
+      <ul>
+        {nav.map((n) => <li><a href={`#${n.id}`}>{n.jp}</a></li>)}
+      </ul>
+    </nav>
+
+    <div class="ft__contact">
+      <p>{site.address.zip} {site.address.body}</p>
+      <p>{site.address.access}</p>
+      <p class="ft__links">
+        <a href={site.line} target="_blank" rel="noopener">公式LINE</a>
+        <a href={site.instagram} target="_blank" rel="noopener">Instagram</a>
+        <a href={`mailto:${site.email}`}>メール</a>
+      </p>
+    </div>
+  </div>
+
+  <p class="ft__copy">© {year} {site.name}（VIVANA art）</p>
+</footer>
+
+<style>
+  .ft {
+    background: var(--board-deep);
+    color: var(--chalk-dim);
+    padding-top: 3rem;
+  }
+  .ft__inner {
+    display: grid;
+    grid-template-columns: 1.2fr 1fr 1.2fr;
+    gap: 2rem;
+    padding-bottom: 2.5rem;
+    border-bottom: 1px dashed rgba(247, 244, 236, 0.15);
+  }
+  .ft__brand {
+    display: flex;
+    align-items: center;
+    gap: 0.9rem;
+  }
+  .ft__brand b {
+    color: var(--chalk);
+    font-size: 1.05rem;
+  }
+  .ft__brand p {
+    font-size: 0.82rem;
+  }
+  .ft__nav ul {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.5rem 1rem;
+  }
+  .ft__nav a {
+    font-weight: 700;
+    font-size: 0.92rem;
+  }
+  .ft__nav a:hover {
+    color: var(--sun);
+  }
+  .ft__contact {
+    font-size: 0.88rem;
+    line-height: 1.9;
+  }
+  .ft__links {
+    display: flex;
+    gap: 1rem;
+    margin-top: 0.6rem;
+  }
+  .ft__links a {
+    color: var(--sun);
+    font-weight: 700;
+  }
+  .ft__copy {
+    text-align: center;
+    font-size: 0.8rem;
+    padding: 1.4rem;
+    color: rgba(247, 244, 236, 0.4);
+  }
+
+  @media (max-width: 760px) {
+    .ft__inner {
+      grid-template-columns: 1fr;
+      gap: 1.5rem;
+    }
+  }
+</style>

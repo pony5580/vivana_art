@@ -1,0 +1,145 @@
+---
+import { Image } from 'astro:assets';
+import { courses } from '../data/site';
+import kidsPhoto from '../assets/photos/kids-clay.jpg';
+import juniorPhoto from '../assets/photos/texture-paint.jpg';
+import youthPhoto from '../assets/photos/chalk-shell-making.jpg';
+
+const photos = { kids: kidsPhoto, junior: juniorPhoto, youth: youthPhoto };
+---
+
+<section class="section class" id="class">
+  <div class="wrap">
+    <header class="class__head">
+      <p class="eyebrow">Class</p>
+      <h2 class="heading">年齢と「好き」に寄り添う、3つのコース。</h2>
+    </header>
+
+    <div class="class__list">
+      {
+        courses.map((c, i) => (
+          <article class="course" style={`--c:${c.color}`} data-i={i}>
+            <figure class="course__photo">
+              <Image
+                src={photos[c.key]}
+                alt={`${c.name}の様子`}
+                widths={[380, 620]}
+                sizes="(max-width:860px) 90vw, 340px"
+              />
+              <span class="course__tag">{c.name}</span>
+            </figure>
+            <div class="course__body">
+              <p class="course__target">{c.target}</p>
+              <p class="course__desc">{c.body}</p>
+              <ul class="course__times">
+                {c.times.map((t) => (
+                  <li>{t}</li>
+                ))}
+              </ul>
+              <p class="course__price">
+                <b>{c.price}</b>
+                <span>/ 月2回・{c.minutes}</span>
+              </p>
+            </div>
+          </article>
+        ))
+      }
+    </div>
+  </div>
+</section>
+
+<style>
+  .class__head {
+    text-align: center;
+    margin-bottom: clamp(2rem, 5vw, 3.5rem);
+  }
+  .class__list {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: clamp(1.2rem, 2.5vw, 2rem);
+  }
+  .course {
+    background: #fff;
+    border-radius: var(--radius);
+    overflow: hidden;
+    box-shadow: var(--shadow-soft);
+    border-top: 6px solid var(--c);
+    display: flex;
+    flex-direction: column;
+  }
+  .course__photo {
+    position: relative;
+    aspect-ratio: 4 / 3;
+    overflow: hidden;
+  }
+  .course__photo :global(img) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .course__tag {
+    position: absolute;
+    left: 0.9rem;
+    bottom: 0.9rem;
+    background: var(--c);
+    color: #fff;
+    font-weight: 700;
+    font-size: 1.02rem;
+    padding: 0.3em 0.9em;
+    border-radius: 999px;
+    box-shadow: 0 6px 14px -6px rgba(0, 0, 0, 0.5);
+  }
+  .course__body {
+    padding: 1.3rem 1.3rem 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.7rem;
+    flex: 1;
+  }
+  .course__target {
+    font-weight: 700;
+    color: var(--c);
+    font-size: 0.95rem;
+  }
+  .course__desc {
+    font-size: 0.95rem;
+    color: var(--ink);
+  }
+  .course__times {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    margin-top: auto;
+  }
+  .course__times li {
+    font-size: 0.8rem;
+    background: var(--paper-2);
+    color: var(--ink-soft);
+    padding: 0.25em 0.7em;
+    border-radius: 6px;
+  }
+  .course__price {
+    display: flex;
+    align-items: baseline;
+    gap: 0.5rem;
+    padding-top: 0.6rem;
+    border-top: 1px dashed var(--paper-2);
+  }
+  .course__price b {
+    font-size: 1.4rem;
+    font-weight: 900;
+    color: var(--ink);
+  }
+  .course__price span {
+    font-size: 0.82rem;
+    color: var(--ink-soft);
+  }
+
+  @media (max-width: 860px) {
+    .class__list {
+      grid-template-columns: 1fr;
+      max-width: 460px;
+      margin-inline: auto;
+    }
+  }
+</style>

@@ -1,0 +1,217 @@
+---
+import Logo from './Logo.astro';
+import { site, nav } from '../data/site';
+---
+
+<header class="hd" data-header>
+  <div class="hd__inner wrap">
+    <a class="hd__brand" href="#top" aria-label={`${site.name} ホーム`}>
+      <Logo size={48} />
+      <span class="hd__name">
+        <b>{site.name}</b>
+        <small>{site.tagline}</small>
+      </span>
+    </a>
+
+    <nav class="hd__nav" aria-label="サイト内ナビゲーション">
+      <ul>
+        {
+          nav.map((n) => (
+            <li>
+              <a href={`#${n.id}`}>{n.jp}</a>
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
+
+    <a class="btn btn--line hd__cta" href={site.line} target="_blank" rel="noopener">
+      体験を申し込む
+    </a>
+
+    <button class="hd__toggle" data-toggle aria-expanded="false" aria-controls="drawer">
+      <span></span><span></span><span></span>
+      <span class="sr-only">メニューを開く</span>
+    </button>
+  </div>
+
+  <!-- モバイル用ドロワー -->
+  <div class="drawer" id="drawer" data-drawer hidden>
+    <ul>
+      {
+        nav.map((n) => (
+          <li>
+            <a href={`#${n.id}`} data-drawer-link>
+              <span class="drawer__latin">{n.label}</span>
+              {n.jp}
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+    <a class="btn btn--line" href={site.line} target="_blank" rel="noopener">
+      体験を申し込む（LINE）
+    </a>
+  </div>
+</header>
+
+<style>
+  .hd {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    background: color-mix(in srgb, var(--paper) 88%, transparent);
+    backdrop-filter: blur(8px);
+    border-bottom: 1px solid var(--paper-2);
+    transition: box-shadow 0.2s ease;
+  }
+  .hd[data-scrolled] {
+    box-shadow: 0 6px 20px -14px rgba(23, 32, 25, 0.5);
+  }
+  .hd__inner {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    min-height: 70px;
+  }
+  .hd__brand {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    margin-right: auto;
+  }
+  .hd__name {
+    display: flex;
+    flex-direction: column;
+    line-height: 1.15;
+  }
+  .hd__name b {
+    font-size: 1.05rem;
+    font-weight: 700;
+  }
+  .hd__name small {
+    font-size: 0.7rem;
+    color: var(--ink-soft);
+    letter-spacing: 0.08em;
+  }
+  .hd__nav ul {
+    display: flex;
+    gap: clamp(0.6rem, 1.6vw, 1.4rem);
+  }
+  .hd__nav a {
+    font-size: 0.95rem;
+    font-weight: 700;
+    padding: 0.3em 0.2em;
+    position: relative;
+  }
+  .hd__nav a::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 100%;
+    bottom: -2px;
+    height: 3px;
+    border-radius: 3px;
+    background: var(--sun);
+    transition: right 0.2s ease;
+  }
+  .hd__nav a:hover::after {
+    right: 0;
+  }
+  .hd__cta {
+    padding: 0.6em 1.2em;
+    font-size: 0.92rem;
+  }
+  .hd__toggle {
+    display: none;
+    flex-direction: column;
+    justify-content: center;
+    gap: 5px;
+    width: 44px;
+    height: 44px;
+    background: none;
+    border: none;
+    cursor: pointer;
+  }
+  .hd__toggle span:not(.sr-only) {
+    display: block;
+    height: 3px;
+    width: 24px;
+    margin-inline: auto;
+    background: var(--board);
+    border-radius: 3px;
+    transition: transform 0.25s ease, opacity 0.2s ease;
+  }
+  .hd[data-open] .hd__toggle span:nth-child(1) {
+    transform: translateY(8px) rotate(45deg);
+  }
+  .hd[data-open] .hd__toggle span:nth-child(2) {
+    opacity: 0;
+  }
+  .hd[data-open] .hd__toggle span:nth-child(3) {
+    transform: translateY(-8px) rotate(-45deg);
+  }
+
+  .drawer {
+    display: none;
+    padding: 1rem var(--gutter) 2rem;
+    background: var(--board);
+    color: var(--chalk);
+  }
+  .drawer ul {
+    display: grid;
+    gap: 0.2rem;
+    margin-bottom: 1.2rem;
+  }
+  .drawer a {
+    display: flex;
+    align-items: baseline;
+    gap: 0.8rem;
+    padding: 0.7rem 0.2rem;
+    font-weight: 700;
+    border-bottom: 1px dashed rgba(247, 244, 236, 0.18);
+  }
+  .drawer__latin {
+    font-family: var(--font-hand);
+    font-size: 1.35rem;
+    color: var(--sun);
+    min-width: 3.8em;
+  }
+
+  @media (max-width: 900px) {
+    .hd__nav,
+    .hd__cta {
+      display: none;
+    }
+    .hd__toggle {
+      display: flex;
+    }
+    .hd[data-open] .drawer {
+      display: block;
+    }
+  }
+</style>
+
+<script>
+  const header = document.querySelector('[data-header]') as HTMLElement;
+  const toggle = document.querySelector('[data-toggle]') as HTMLButtonElement;
+  const drawer = document.querySelector('[data-drawer]') as HTMLElement;
+
+  const setOpen = (open: boolean) => {
+    header.toggleAttribute('data-open', open);
+    toggle.setAttribute('aria-expanded', String(open));
+    drawer.hidden = !open;
+  };
+
+  toggle?.addEventListener('click', () =>
+    setOpen(!header.hasAttribute('data-open'))
+  );
+  document.querySelectorAll('[data-drawer-link]').forEach((a) =>
+    a.addEventListener('click', () => setOpen(false))
+  );
+
+  const onScroll = () =>
+    header.toggleAttribute('data-scrolled', window.scrollY > 8);
+  onScroll();
+  window.addEventListener('scroll', onScroll, { passive: true });
+</script>
