@@ -1,9 +1,8 @@
 ---
 import { site } from '../data/site';
-const mapQuery = encodeURIComponent(
-  `${site.address.zip} ${site.address.body}`
-);
-const mapSrc = `https://www.google.com/maps?q=${mapQuery}&z=16&output=embed`;
+const mapQuery = encodeURIComponent(`${site.address.zip} ${site.address.body}`);
+const mapLink = `https://www.google.com/maps/search/?api=1&query=${mapQuery}`;
+const { lat, lng } = site.address;
 ---
 
 <section class="section access" id="access">
@@ -23,24 +22,22 @@ const mapSrc = `https://www.google.com/maps?q=${mapQuery}&z=16&output=embed`;
         </div>
       </dl>
 
-      <a
-        class="access__maplink"
-        href={`https://www.google.com/maps/search/?api=1&query=${mapQuery}`}
-        target="_blank"
-        rel="noopener"
-      >
-        Googleマップで開く →
+      <a class="access__maplink" href={mapLink} target="_blank" rel="noopener">
+        Googleマップで道順を見る →
       </a>
     </div>
 
-    <div class="access__map">
-      <iframe
-        src={mapSrc}
-        title={`${site.name}の地図`}
-        loading="lazy"
-        referrerpolicy="no-referrer-when-downgrade"
-        allowfullscreen
-      ></iframe>
+    <div class="access__mapframe">
+      <div
+        id="map"
+        class="access__map"
+        data-lat={lat}
+        data-lng={lng}
+        data-label={site.name}
+        role="img"
+        aria-label={`${site.name}の場所（${site.address.body}）`}
+      >
+      </div>
     </div>
   </div>
 </section>
@@ -75,17 +72,68 @@ const mapSrc = `https://www.google.com/maps?q=${mapQuery}&z=16&output=embed`;
     border-bottom: 2px solid currentColor;
     padding-bottom: 2px;
   }
-  .access__map {
+
+  /* 手描き風フレームで囲う */
+  .access__mapframe {
+    position: relative;
     border-radius: var(--radius);
-    overflow: hidden;
+    padding: 8px;
+    background: #fff;
     box-shadow: var(--shadow-soft);
-    aspect-ratio: 16 / 10;
-    background: var(--paper-2);
+    transform: rotate(-0.6deg);
   }
-  .access__map iframe {
+  .access__mapframe::before {
+    /* マスキングテープ */
+    content: '';
+    position: absolute;
+    top: -12px;
+    left: 50%;
+    width: 96px;
+    height: 26px;
+    transform: translateX(-50%) rotate(-3deg);
+    background: rgba(242, 184, 7, 0.55);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+    z-index: 2;
+  }
+  .access__map {
+    aspect-ratio: 16 / 10;
     width: 100%;
-    height: 100%;
-    border: 0;
+    border-radius: 10px;
+    overflow: hidden;
+    background: var(--paper-2);
+    /* 標準OSMタイルを紙面テイスト（淡い暖色）に寄せる */
+    filter: sepia(0.32) saturate(0.72) brightness(1.04) contrast(0.94)
+      hue-rotate(-8deg);
+  }
+
+  /* Leaflet UI をブランドに寄せる */
+  .access__map :global(.leaflet-container) {
+    font-family: var(--font-jp);
+    background: #eef1ea;
+  }
+  .access__map :global(.leaflet-bar a) {
+    color: var(--board);
+    border-radius: 0;
+  }
+  .access__map :global(.leaflet-bar) {
+    border: none;
+    box-shadow: 0 4px 12px -6px rgba(0, 0, 0, 0.4);
+  }
+  .access__map :global(.leaflet-control-attribution) {
+    font-size: 10px;
+    background: rgba(255, 255, 255, 0.7);
+  }
+  /* クレヨン風ピンのラベル */
+  .access__map :global(.pin__label) {
+    background: var(--viva-red);
+    color: #fff;
+    font-weight: 700;
+    font-size: 12px;
+    padding: 2px 8px;
+    border-radius: 999px;
+    white-space: nowrap;
+    box-shadow: 0 4px 10px -4px rgba(0, 0, 0, 0.5);
+    transform: translate(-50%, -6px);
   }
 
   @media (max-width: 760px) {
@@ -94,3 +142,58 @@ const mapSrc = `https://www.google.com/maps?q=${mapQuery}&z=16&output=embed`;
     }
   }
 </style>
+
+<script>
+  import L from 'leaflet';
+  import 'leaflet/dist/leaflet.css';
+
+  const el = document.getElementById('map');
+  if (el) {
+    const lat = Number(el.dataset.lat);
+    const lng = Number(el.dataset.lng);
+    const label = el.dataset.label ?? '';
+
+    const map = L.map(el, {
+      center: [lat, lng],
+      zoom: 16,
+      scrollWheelZoom: false, // ページスクロールを奪わない
+      zoomControl: true,
+      attributionControl: true,
+    });
+
+    // キー不要のOpenStreetMap標準タイル（CSSフィルタで紙面トーンに寄せる）
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      subdomains: 'abc',
+      maxZoom: 19,
+      attribution:
+        '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+    }).addTo(map);
+
+    // 手描き・クレヨン風のピン（SVG divIcon）
+    const pinSvg = `
+      <svg width="40" height="52" viewBox="0 0 40 52" xmlns="http://www.w3.org/2000/svg">
+        <path d="M20 2 C10 2 3 9 3 19 C3 31 20 50 20 50 C20 50 37 31 37 19 C37 9 30 2 20 2 Z"
+          fill="#e8552b" stroke="#fff" stroke-width="3" stroke-linejoin="round"/>
+        <circle cx="20" cy="18.5" r="6.5" fill="#f2b807"/>
+      </svg>`;
+    const icon = L.divIcon({
+      html: pinSvg,
+      className: 'pin',
+      iconSize: [40, 52],
+      iconAnchor: [20, 50],
+      popupAnchor: [0, -46],
+    });
+    L.marker([lat, lng], { icon, title: label, keyboard: false })
+      .addTo(map)
+      .bindTooltip(label, {
+        permanent: true,
+        direction: 'top',
+        offset: [0, -46],
+        className: 'pin__label',
+      });
+
+    // フレームのサイズ変化に追従
+    setTimeout(() => map.invalidateSize(), 200);
+    window.addEventListener('resize', () => map.invalidateSize());
+  }
+</script>
